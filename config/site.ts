@@ -1,13 +1,13 @@
 import { SiteConfig } from "types"
 
 export const siteConfig: SiteConfig = {
-  name: "Taxonomy",
+  name: "AI Saas Starter",
   description:
-    "An open source application built using the new router, server components and everything new in Next.js 13.",
-  url: "https://tx.shadcn.com",
-  ogImage: "https://tx.shadcn.com/og.jpg",
+    "A modern SaaS starter kit powered by Next.js 13+, Tailwind CSS, and Radix UI. Includes authentication, dark mode, and clean UI components.",
+  url: "https://ai-saas-starter.derek.haus", // Update this URL to your actual site URL
+  ogImage: "https://ai-saas-starter.derek.haus/og.jpg", // Update this URL to your actual OG image
   links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn/taxonomy",
+    twitter: "https://x.com/DerekHaus_",
+    github: "https://github.com/RumbleInCybertron/saas-starter-template-ai",
   },
 }
