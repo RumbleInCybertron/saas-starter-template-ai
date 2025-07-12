@@ -1,69 +1,187 @@
-import Link from "next/link"
+'use client'
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Check, Zap, Crown, Star } from 'lucide-react'
+import { toast } from 'sonner'
 
-export const metadata = {
-  title: "Pricing",
-}
+const plans = [
+  {
+    name: 'Free',
+    price: 0,
+    priceId: null,
+    description: 'Perfect for getting started',
+    features: [
+      '1,000 tokens per month',
+      'Basic AI responses',
+      'Chat history',
+      'Email support',
+    ],
+    icon: Zap,
+    popular: false,
+  },
+  {
+    name: 'Pro',
+    price: 19,
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO,
+    description: 'Best for professionals',
+    features: [
+      '50,000 tokens per month',
+      'Advanced AI responses',
+      'Priority support',
+      'Export conversations',
+      'Custom instructions',
+    ],
+    icon: Crown,
+    popular: true,
+  },
+  {
+    name: 'Enterprise',
+    price: 99,
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ENTERPRISE,
+    description: 'For teams and businesses',
+    features: [
+      'Unlimited tokens',
+      'Team collaboration',
+      'Advanced analytics',
+      'API access',
+      'Dedicated support',
+      'Custom integrations',
+    ],
+    icon: Star,
+    popular: false,
+  },
+]
 
-export default function PricingPage() {
+export default function Pricing() {
+  const { data: session } = useSession()
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+
+  const handleSubscribe = async (priceId: string, planName: string) => {
+    if (!session) {
+      toast.error('Please sign in to subscribe')
+      return
+    }
+
+    setLoadingPlan(planName)
+
+    try {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ priceId }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session')
+      }
+
+      const { url } = await response.json()
+      window.location.href = url
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.')
+    } finally {
+      setLoadingPlan(null)
+    }
+  }
+
   return (
-    <section className="container flex flex-col  gap-6 py-8 md:max-w-[64rem] md:py-12 lg:py-24">
-      <div className="mx-auto flex w-full flex-col gap-4 md:max-w-[58rem]">
-        <h2 className="font-heading text-3xl leading-[1.1] sm:text-3xl md:text-6xl">
-          Simple, transparent pricing
-        </h2>
-        <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-          Unlock all features including unlimited posts for your blog.
+    <div className="container mx-auto px-4 py-16">
+      <div className="text-center max-w-3xl mx-auto mb-16">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          Choose Your Plan
+        </h1>
+        <p className="text-xl text-gray-600 dark:text-gray-300">
+          Select the perfect plan for your AI assistant needs. Upgrade or downgrade at any time.
         </p>
       </div>
-      <div className="grid w-full items-start gap-10 rounded-lg border p-10 md:grid-cols-[1fr_200px]">
-        <div className="grid gap-6">
-          <h3 className="text-xl font-bold sm:text-2xl">
-            What&apos;s included in the PRO plan
-          </h3>
-          <ul className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-            <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Unlimited Posts
-            </li>
-            <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Unlimited Users
-            </li>
 
-            <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Custom domain
-            </li>
-            <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Dashboard Analytics
-            </li>
-            <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Access to Discord
-            </li>
-            <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Premium Support
-            </li>
-          </ul>
-        </div>
-        <div className="flex flex-col gap-4 text-center">
-          <div>
-            <h4 className="text-7xl font-bold">$19</h4>
-            <p className="text-sm font-medium text-muted-foreground">
-              Billed Monthly
-            </p>
-          </div>
-          <Link href="/login" className={cn(buttonVariants({ size: "lg" }))}>
-            Get Started
-          </Link>
-        </div>
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {plans.map((plan) => {
+          const Icon = plan.icon
+          return (
+            <Card
+              key={plan.name}
+              className={`relative ${
+                plan.popular
+                  ? 'border-2 border-blue-500 shadow-lg scale-105'
+                  : 'border border-gray-200 dark:border-gray-700'
+              }`}
+            >
+              {plan.popular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+
+              <CardHeader className="text-center pb-4">
+                <div className="mx-auto mb-4">
+                  <Icon className={`h-12 w-12 ${plan.popular ? 'text-blue-600' : 'text-gray-600'}`} />
+                </div>
+                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                <CardDescription>{plan.description}</CardDescription>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                    ${plan.price}
+                  </span>
+                  <span className="text-gray-600 dark:text-gray-300">/month</span>
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                <ul className="space-y-3">
+                  {plan.features.map((feature, index) => (
+                    <li key={index} className="flex items-center">
+                      <Check className="h-4 w-4 text-green-500 mr-3 flex-shrink-0" />
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="pt-4">
+                  {plan.price === 0 ? (
+                    <Button variant="outline" className="w-full" disabled>
+                      Current Plan
+                    </Button>
+                  ) : (
+                    <Button
+                      className={`w-full ${
+                        plan.popular
+                          ? 'bg-blue-600 hover:bg-blue-700'
+                          : ''
+                      }`}
+                      onClick={() => handleSubscribe(plan.priceId!, plan.name)}
+                      disabled={loadingPlan === plan.name}
+                    >
+                      {loadingPlan === plan.name
+                        ? 'Loading...'
+                        : `Subscribe to ${plan.name}`}
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
-      <div className="mx-auto flex w-full max-w-[58rem] flex-col gap-4">
-        <p className="max-w-[85%] leading-normal text-muted-foreground sm:leading-7">
-          Taxonomy is a demo app.{" "}
-          <strong>You can test the upgrade and won&apos;t be charged.</strong>
+
+      <div className="text-center mt-16">
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          Questions about pricing?
+        </h3>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Contact our team for custom enterprise solutions or if you need help choosing the right plan.
         </p>
+        <Button variant="outline">Contact Sales</Button>
       </div>
-    </section>
+    </div>
   )
 }
