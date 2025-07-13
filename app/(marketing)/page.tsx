@@ -15,7 +15,7 @@ export default function Home() {
           A complete SaaS starter with AI chat, authentication, billing, and everything you need to launch your next AI product.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/auth/signup">
+          <Link href="/signup">
             <Button size="lg" className="text-lg px-8 py-3">
               Get Started Free
             </Button>
@@ -85,7 +85,7 @@ export default function Home() {
         <p className="text-xl mb-8 text-blue-100">
           Get your AI SaaS up and running in minutes, not months.
         </p>
-        <Link href="/auth/signup">
+        <Link href="/signup">
           <Button size="lg" variant="secondary" className="text-lg px-8 py-3">
             Start Your Free Trial
           </Button>
