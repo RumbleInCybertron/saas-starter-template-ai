@@ -35,14 +35,13 @@ export function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link href="/pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-              Pricing
+              <Button variant="ghost">Pricing</Button>
             </Link>
-            
             {status === 'loading' ? (
               <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
             ) : session ? (
               <div className="flex items-center space-x-4">
-                <Link href="/dashboard">
+                <Link href="/dashboard" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
                   <Button variant="ghost">Dashboard</Button>
                 </Link>
                 <DropdownMenu>
@@ -74,8 +73,8 @@ export function Navbar() {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 >
                   {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
