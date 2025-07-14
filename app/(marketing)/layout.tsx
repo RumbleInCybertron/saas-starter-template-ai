@@ -18,16 +18,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Providers>
-          <Navbar />
-          <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
-            {children}
-          </main>
-          <Toaster />
-        </Providers>
-      </body>
-    </html>
+    <>
+      <Providers>
+        <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+          {children}
+        </main>
+        <Toaster />
+      </Providers>
+    </>
+
   )
 }

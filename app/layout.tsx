@@ -5,7 +5,7 @@ import { Providers } from '@/components/providers'
 import { Navbar } from '@/components/navbar'
 import { Toaster } from '@/components/ui/sonner'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], variable: "--font-sans" })
 
 export const metadata: Metadata = {
   title: 'AI SaaS Starter',
@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.className}>
       <body className={inter.className}>
         <Providers>
           <Navbar />
