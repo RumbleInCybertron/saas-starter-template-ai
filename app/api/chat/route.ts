@@ -64,7 +64,10 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      messages = chat.messages.map(msg => ({
+      const maxHistory = 6
+      messages = chat.messages
+      .slice(-maxHistory) // Limit to last 6 messages
+      .map(msg => ({
         role: msg.role,
         content: msg.content
       }))
