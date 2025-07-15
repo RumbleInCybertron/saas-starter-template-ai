@@ -19,6 +19,10 @@ export function Navbar() {
   const { data: session, status } = useSession()
   const { theme, setTheme } = useTheme()
 
+  if (status === 'loading') {
+    return null // Or <SkeletonNavbar />
+  }
+
   return (
     <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,10 +83,10 @@ export function Navbar() {
                 >
                   {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                 </Button>
-                <Link href="/auth/signin">
+                <Link href="/signin">
                   <Button variant="ghost">Sign in</Button>
                 </Link>
-                <Link href="/auth/signup">
+                <Link href="/signup">
                   <Button>Get Started</Button>
                 </Link>
               </div>
@@ -135,14 +139,14 @@ export function Navbar() {
             ) : (
               <>
                 <Link
-                  href="/auth/signin"
+                  href="/signin"
                   className="block px-3 py-2 text-gray-600 dark:text-gray-300"
                   onClick={() => setIsOpen(false)}
                 >
                   Sign in
                 </Link>
                 <Link
-                  href="/auth/signup"
+                  href="/signup"
                   className="block px-3 py-2 text-gray-600 dark:text-gray-300"
                   onClick={() => setIsOpen(false)}
                 >
