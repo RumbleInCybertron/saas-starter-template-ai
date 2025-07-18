@@ -88,3 +88,67 @@ pnpm dev
 ## License
 
 Licensed under the [MIT license](https://github.com/shadcn/taxonomy/blob/main/LICENSE.md).
+
+🧾 Stripe Webhook Setup
+
+This app uses Stripe webhooks to handle events like checkout.session.completed, invoice.paid, and more. Follow the appropriate instructions below depending on your environment:
+🧪 Local Development (Test Mode)
+
+    Install the Stripe CLI (if not already):
+    https://stripe.com/docs/stripe-cli
+
+    Start your dev server:
+
+pnpm dev
+
+In a new terminal, run:
+
+stripe listen --forward-to localhost:3000/api/webhook
+
+The CLI will display a webhook secret that looks like:
+
+whsec_abc123...
+
+Copy that value into your .env.local:
+
+STRIPE_WEBHOOK_SECRET=whsec_abc123...
+
+Trigger a test event (optional):
+
+    stripe trigger checkout.session.completed
+
+    Your local /api/webhook endpoint will receive and handle the event.
+
+    ⚠️ Note: This webhook secret changes every time you restart the Stripe CLI. Make sure to update your .env.local with the latest value if needed.
+
+🚀 Production or Staging Setup
+
+    Go to your Stripe Dashboard → Webhooks
+
+    Click “Create an event destination”
+
+    Set the endpoint URL to:
+
+https://yourdomain.com/api/webhook
+
+Select the events to listen for, such as:
+
+    checkout.session.completed
+
+    invoice.paid
+
+    invoice.payment_failed
+
+    customer.subscription.created
+
+    customer.subscription.updated
+
+    customer.subscription.deleted
+
+After saving, Stripe will show a signing secret (starts with whsec_...)
+
+Add it to your production environment as:
+
+    STRIPE_WEBHOOK_SECRET=whsec_your_permanent_secret
+
+    ✅ This webhook secret remains the same unless manually rotated, making it ideal for long-term use.
